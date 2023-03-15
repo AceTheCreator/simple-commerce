@@ -6,7 +6,8 @@ info:
 servers: 
   development:
     url: http://localhost:15672
-    protocol: AMQP
+    protocol: amqp
+    description: This our development broker.
 defaultContentType: application/json
 channels:
   signup:
