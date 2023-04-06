@@ -1,0 +1,26 @@
+default:
+  app:
+    name: Account Service
+    version: 1.0.0
+
+  broker:
+    amqp:
+      exchange: userExchange
+      username: rabbitmq
+      password: rabbitmq
+      host: localhost:15672
+      port:
+      topics: ["user.signup"]
+      queue: user
+      queueOptions:
+        exclusive: false
+        durable: true
+        autoDelete: true
+
+development:
+
+test:
+
+staging:
+
+production:

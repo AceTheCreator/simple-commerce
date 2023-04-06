@@ -5,34 +5,70 @@ info:
   description: This service is in charge of processing user service
 servers: 
   development:
-    url: http://localhost:15672
+    url: amqp://localhost:{port}
     protocol: amqp
+    protocolVersion: "0.9.1"
     description: This our development broker.
+    variables:
+      port:
+        enum:
+          - '15672'
+          - '5672'
 defaultContentType: application/json
 channels:
-  signup:
-    subscribe:
-      message:
-        $ref: '#/components/messages/UserSignUp'
-  login:
-    subscribe:
-      message:
-        $ref: '#/components/messages/UserLogIn'
-  user:
+  user/signup:
     publish:
+      operationId: signup
+      message:
+        $ref: '#/components/messages/userSignUp'
+      bindings:
+        amqp:
+          cc: ['user.signup']
+          timestamp: true
+          ack: false
+          bindingVersion: 0.2.0
+    bindings:
+      $ref: '#/components/channelBindings/userExchange'
+  user/login:
+    subscribe:
+      operationId: login
+      message:
+        $ref: '#/components/messages/userLogIn'
+    bindings:
+      $ref: '#/components/channelBindings/userExchange'
+  user/queue:
+    bindings:
+      $ref: '#/components/channelBindings/userExchange'
+    subscribe: 
+      operationId: userQueue
       message: 
-        $ref: '#/components/messages/User'
+        name: userQueue
+        messageId: userQueue
+        payload: 
+          type: object
+          properties:
+            queueId:
+              $ref: '#/components/schemas/uuid'
+            status: 
+              type: object
+              description: Status code and message for the queue
+              properties:
+                code:
+                  type: integer
+                message: 
+                  type: string
+      bindings:
+        amqp:
+          cc: ['user.queue']
+          timestamp: true
+          ack: false
+          bindingVersion: 0.2.0
+
 components:
   messages:
-    User:
-      payload:
-        type: object
-        properties:
-          id:
-            type: string
-            format: string
-            description: User unique identifier
-    UserSignUp:
+    userSignUp:
+      messageId: userSignUp
+      name: userSignUp
       payload:
         type: object
         properties:
@@ -45,9 +81,9 @@ components:
             description: Email of the user
           password: 
             type: string
-            format: string
             description: Password of the user
-    UserLogIn:
+    userLogIn:
+      name: userLogIn
       payload:
         type: object
         properties:
@@ -59,3 +95,25 @@ components:
             type: string
             format: string
             description: Password of the user
+  channelBindings:
+    userExchange:
+      amqp:
+        is: routingKey
+        queue:
+          name: user
+          durable: true
+          exclusive: true
+          autoDelete: false
+          vhost: /
+        exchange:
+          name: userExchange
+          type: topic
+          durable: true
+          autoDelete: false
+          vhost: /
+        bindingVersion: 0.2.0
+  schemas:
+     uuid:
+       type: string
+       format: uuid
+       description: A UUID (Universally Unique Identifier) is a 128-bit number used to identify information in computer systems.
