@@ -33,13 +33,6 @@ app.useOutbound(errorLogger);
 app.useOutbound(logger);
 app.useOutbound(json2string);
 
-setTimeout(() => {
-  app.send({
-    code: 200,
-    message: 'Ok'
-  }, {}, 'user/queue')
-},1000)
-
 app
   .listen()
   .then((adapters) => {

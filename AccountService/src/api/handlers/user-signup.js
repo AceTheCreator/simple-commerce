@@ -10,5 +10,6 @@ const handler = module.exports = {};
  * @param {string} options.message.payload.password - Password of the user
  */
 handler.signup = async ({message}) => {
+  message.reply(message.payload, {}, 'user/queue')
   // Implement your business logic here...
 };

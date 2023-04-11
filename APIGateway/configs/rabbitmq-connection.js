@@ -46,7 +46,7 @@ module.exports = {
       ch.on("close", function () {
         console.log("[AMQP] channel closed");
       });
-      
+
       // Connect to queue
       await ch.assertQueue(
         queue,
@@ -59,7 +59,6 @@ module.exports = {
       await ch.bindQueue(queue, "userExchange", "user.queue");
 
       function processMsg(msg) {
-        console.log(msg);
         // Process incoming messages and send them to fnConsumer
         // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
         fnConsumer(msg, function (ok) {
@@ -71,7 +70,7 @@ module.exports = {
         });
       }
 
-      ch.consume(queue, processMsg, { noAck: true });
+      ch.consume(queue, processMsg, { ack: false });
     });
   },
   StartPublisher: () => {
