@@ -34,7 +34,7 @@ module.exports = {
       fnFinish();
     });
   },
-  StartConsumer: (queue, fnConsumer) => {
+  StartConsumer: (queue, exchange, topic, fnConsumer) => {
     // Create a channel for queue
     amqpConn.createChannel(async function (err, ch) {
       if (closeOnErr(err)) return;
@@ -56,7 +56,7 @@ module.exports = {
           console.log("[AMQP] Worker is started");
         }
       );
-      await ch.bindQueue(queue, "userExchange", "user.queue");
+      await ch.bindQueue(queue, exchange, topic);
 
       function processMsg(msg) {
         // Process incoming messages and send them to fnConsumer

@@ -24,14 +24,13 @@ fastify.register(require("@fastify/cors"), (instance) => {
 fastify.register(FastifySSE);
 
 function fnConsumer(msg, callback) {
-  console.log("Received message: ", msg.content.toString());
-  // we tell rabbitmq that the message was processed successfully
+  const message = msg.content.toString();
+  console.log(JSON.parse(message))
   callback(true);
 }
 
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
-  rabbitmqLib.StartConsumer("user", fnConsumer);
   rabbitmqLib.StartPublisher();
 });
 
@@ -47,6 +46,7 @@ fastify.post("/signup", async (req, res) => {
       "user.signup",
       Buffer.from(JSON.stringify({ displayName, email, password }))
     );
+    rabbitmqLib.StartConsumer("user", fnConsumer);
   } catch (error) {
     return res.send({ status: 500, message: error });
   }
@@ -61,11 +61,7 @@ fastify.get(
     keepAliveTimeout: 0,
   },
   (req, reply) => {
-    reply
-      .header("Content-Type", "text/event-stream")
-      .header("Cache-Control", "no-cache")
-      .header("Connection", "keep-alive")
-      .raw.writeHead(200, {
+    reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
@@ -75,19 +71,20 @@ fastify.get(
       message: "This is a server-sent event",
       timestamp: new Date().toISOString(),
     };
+    console.log(eventDetails);
     reply.sse('data: { "message": "Connected" }\n\n');
-    reply.raw.end();
+    // reply.raw.end();
 
     // Send an event every 5 seconds
-    const intervalId = setInterval(() => {
-      reply.sse('data: { "message": "Connected" }\n\n');
-      reply.raw.end();
-    }, 5000);
+    // const intervalId = setInterval(() => {
+    //   reply.sse(eventDetails);
+    //   // reply.raw.end();
+    // }, 5000);
 
     // When the client closes the connection, stop sending events
-    reply.raw.on("close", () => {
-      clearInterval(intervalId);
-    });
+    // reply.raw.on("close", () => {
+    //   clearInterval(intervalId);
+    // });
   }
 );
 

@@ -19,9 +19,9 @@ function App() {
   // Listen for SSE events and handle the session token when it is received
   useEffect(() => {
     const eventSource = new EventSource("http://localhost:5000/events");
-    console.log(eventSource);
     eventSource.addEventListener("message", (event) => {
       try {
+        console.log(event)
         const sessionToken = event.data;
         setSessionToken(sessionToken);
       } catch (error) {
