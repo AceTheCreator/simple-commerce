@@ -1,6 +1,5 @@
 const amqp = require("amqplib/callback_api");
 
-
 let amqpConn = null;
 module.exports = {
   InitConnection: (fnFinish) => {
@@ -34,7 +33,7 @@ module.exports = {
       fnFinish();
     });
   },
-  StartConsumer: (queue, exchange, topic, fnConsumer) => {
+  StartConsumer: () => {
     // Create a channel for queue
     amqpConn.createChannel(async function (err, ch) {
       if (closeOnErr(err)) return;
@@ -47,8 +46,19 @@ module.exports = {
         console.log("[AMQP] channel closed");
       });
 
-      // Connect to queue
-      await ch.assertQueue(
+      conChannel = ch;
+       console.log("[AMQP] Consumer started");
+    });
+  },
+  ConsumeMessage: async (queue, exchange, topic, fnConsumer) => {
+    if (!conChannel) {
+      console.log(
+        "[AMQP] Can't consume message. Consumer is not initialized. You need to initialize them with StartPublisher function"
+      );
+      return;
+    }
+          // Connect to queue
+      await conChannel.assertQueue(
         queue,
         { durable: true, autoDelete: true },
         (err) => {
@@ -56,22 +66,22 @@ module.exports = {
           console.log("[AMQP] Worker is started");
         }
       );
-      await ch.bindQueue(queue, exchange, topic);
+      await conChannel.bindQueue(queue, exchange, topic);
 
       function processMsg(msg) {
         // Process incoming messages and send them to fnConsumer
         // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
         fnConsumer(msg, function (ok) {
           try {
-            ok ? ch.ack(msg) : ch.reject(msg, true);
+            ok ? conChannel.ack(msg) : conChannel.reject(msg, true);
           } catch (e) {
             closeOnErr(e);
           }
         });
       }
 
-      ch.consume(queue, processMsg, { ack: false });
-    });
+      conChannel.consume(queue, processMsg, { ack: false });
+    
   },
   StartPublisher: () => {
     // Init publisher

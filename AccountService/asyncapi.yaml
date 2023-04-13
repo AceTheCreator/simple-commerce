@@ -47,7 +47,7 @@ channels:
         payload: 
           type: object
           properties:
-            queueId:
+            reqId:
               $ref: '#/components/schemas/uuid'
             status: 
               type: object

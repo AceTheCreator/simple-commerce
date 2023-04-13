@@ -11,6 +11,6 @@ const handler = module.exports = {};
  * @param {string} options.message.payload.status.message
  */
 handler.userQueue = async ({message}) => {
-  console.log('test log')
+  // console.log(message)
   // Implement your business logic here...
 };

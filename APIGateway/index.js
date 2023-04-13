@@ -1,6 +1,9 @@
 const fastify = require("fastify")();
 const rabbitmqLib = require("./configs/rabbitmq-connection");
 const FastifySSE = require("fastify-sse");
+const authRoutes = require("./routes/auth")
+
+fastify.register(authRoutes);
 
 fastify.register(require("@fastify/cors"), (instance) => {
   return (req, callback) => {
@@ -23,35 +26,16 @@ fastify.register(require("@fastify/cors"), (instance) => {
 
 fastify.register(FastifySSE);
 
-function fnConsumer(msg, callback) {
-  const message = msg.content.toString();
-  console.log(JSON.parse(message))
-  callback(true);
-}
-
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
   rabbitmqLib.StartPublisher();
+  rabbitmqLib.StartConsumer();
 });
 
 fastify.get("/", (req, res) => {
   res.send("hello world");
 });
 
-fastify.post("/signup", async (req, res) => {
-  const { displayName, email, password } = req.body;
-  try {
-    rabbitmqLib.PublishMessage(
-      "userExchange",
-      "user.signup",
-      Buffer.from(JSON.stringify({ displayName, email, password }))
-    );
-    rabbitmqLib.StartConsumer("user", fnConsumer);
-  } catch (error) {
-    return res.send({ status: 500, message: error });
-  }
-  res.send({ status: 200, message: "Signup successful" });
-});
 
 fastify.get(
   "/events",
@@ -73,18 +57,6 @@ fastify.get(
     };
     console.log(eventDetails);
     reply.sse('data: { "message": "Connected" }\n\n');
-    // reply.raw.end();
-
-    // Send an event every 5 seconds
-    // const intervalId = setInterval(() => {
-    //   reply.sse(eventDetails);
-    //   // reply.raw.end();
-    // }, 5000);
-
-    // When the client closes the connection, stop sending events
-    // reply.raw.on("close", () => {
-    //   clearInterval(intervalId);
-    // });
   }
 );
 
