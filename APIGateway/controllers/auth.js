@@ -2,12 +2,12 @@ const rabbitmqLib = require("../configs/rabbitmq-connection");
 
 
  async function signup(req, reply) {
-  const { displayName, email, password } = req.body;
+  const { displayName, email, password, reqId } = req.body;
   try {
     rabbitmqLib.PublishMessage(
       "userExchange",
       "user.signup",
-      Buffer.from(JSON.stringify({ displayName, email, password }))
+      Buffer.from(JSON.stringify({ displayName, email, password, reqId }))
     );
     rabbitmqLib.ConsumeMessage("user", "userExchange", "user.queue", fnConsumer);
     function fnConsumer(msg, callback) {
