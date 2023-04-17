@@ -21,30 +21,12 @@ channels:
       operationId: signup
       message:
         $ref: '#/components/messages/userSignUp'
-      bindings:
-        amqp:
-          cc: ['signupKey']
-          timestamp: true
-          ack: false
-          bindingVersion: 0.2.0
-    bindings:
-      $ref: '#/components/channelBindings/userExchange'
   user/login:
     publish:
       operationId: login
       message:
         $ref: '#/components/messages/userLogIn'
-      bindings:
-        amqp:
-          cc: ['loginKey']
-          timestamp: true
-          ack: false
-          bindingVersion: 0.2.0
-    bindings:
-      $ref: '#/components/channelBindings/userExchange'
   user/queue:
-    bindings:
-      $ref: '#/components/channelBindings/tempExchange'
     subscribe: 
       operationId: userQueue
       message: 
@@ -63,12 +45,6 @@ channels:
                   type: integer
                 message: 
                   type: string
-      bindings:
-        amqp:
-          cc: ['temp.user']
-          timestamp: true
-          ack: false
-          bindingVersion: 0.2.0
 
 components:
   messages:
@@ -97,39 +73,39 @@ components:
             type: string
             format: email
             description: Email of the user
-  channelBindings:
-    userExchange:
-      amqp:
-        is: routingKey
-        queue:
-          name: user
-          durable: true
-          exclusive: true
-          autoDelete: false
-          vhost: /
-        exchange:
-          name: userExchange
-          type: direct
-          durable: true
-          autoDelete: false
-          vhost: /
-        bindingVersion: 0.2.0
-    tempExchange:
-      amqp:
-        is: routingKey
-        queue:
-          name: tempQueue
-          durable: true
-          exclusive: true
-          autoDelete: false
-          vhost: /
-        exchange:
-          name: tempExchange
-          type: topic
-          durable: true
-          autoDelete: false
-          vhost: /
-        bindingVersion: 0.2.0
+  # channelBindings:
+  #   userExchange:
+  #     amqp:
+  #       is: routingKey
+  #       queue:
+  #         name: user
+  #         durable: true
+  #         exclusive: true
+  #         autoDelete: false
+  #         vhost: /
+  #       exchange:
+  #         name: userExchange
+  #         type: direct
+  #         durable: true
+  #         autoDelete: false
+  #         vhost: /
+  #       bindingVersion: 0.2.0
+  #   tempExchange:
+  #     amqp:
+  #       is: routingKey
+  #       queue:
+  #         name: tempQueue
+  #         durable: true
+  #         exclusive: true
+  #         autoDelete: false
+  #         vhost: /
+  #       exchange:
+  #         name: tempExchange
+  #         type: topic
+  #         durable: true
+  #         autoDelete: false
+  #         vhost: /
+  #       bindingVersion: 0.2.0
   schemas:
      uuid:
        type: string

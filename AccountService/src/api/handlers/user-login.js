@@ -8,6 +8,5 @@ const handler = module.exports = {};
  * @param {string} options.message.payload.email - Email of the user
  */
 handler.login = async ({message}) => {
-  console.log(message);
   // Implement your business logic here...
 };
