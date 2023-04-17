@@ -47,7 +47,7 @@ module.exports = {
       });
 
       conChannel = ch;
-       console.log("[AMQP] Consumer started");
+      console.log("[AMQP] Consumer started");
     });
   },
   ConsumeMessage: async (queue, exchange, topic, fnConsumer) => {
@@ -57,31 +57,35 @@ module.exports = {
       );
       return;
     }
-          // Connect to queue
-      await conChannel.assertQueue(
-        queue,
-        { durable: true, autoDelete: true },
-        (err) => {
-          if (closeOnErr(err)) return;
-          console.log("[AMQP] Worker is started");
-        }
-      );
-      await conChannel.bindQueue(queue, exchange, topic);
 
-      function processMsg(msg) {
-        // Process incoming messages and send them to fnConsumer
-        // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
-        fnConsumer(msg, function (ok) {
-          try {
-            ok ? conChannel.ack(msg) : conChannel.reject(msg, true);
-          } catch (e) {
-            closeOnErr(e);
-          }
-        });
+    // connect to an exchange
+    await conChannel.assertExchange(exchange, "topic", { durable: true });
+
+    // Connect to queue
+    await conChannel.assertQueue(
+      queue,
+      { durable: true, autoDelete: false },
+      (err) => {
+        if (closeOnErr(err)) return;
+        console.log("[AMQP] Worker is started");
       }
+    );
 
-      conChannel.consume(queue, processMsg, { ack: false });
-    
+    await conChannel.bindQueue(queue, exchange, topic);
+
+    function processMsg(msg) {
+      // Process incoming messages and send them to fnConsumer
+      // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
+      fnConsumer(msg, function (ok) {
+        try {
+          ok ? conChannel.ack(msg) : conChannel.reject(msg, true);
+        } catch (e) {
+          closeOnErr(e);
+        }
+      });
+    }
+
+    conChannel.consume(queue, processMsg, { ack: false });
   },
   StartPublisher: () => {
     // Init publisher

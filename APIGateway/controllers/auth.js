@@ -6,13 +6,13 @@ const rabbitmqLib = require("../configs/rabbitmq-connection");
   try {
     rabbitmqLib.PublishMessage(
       "userExchange",
-      "user.signup",
+      "user.login",
       Buffer.from(JSON.stringify({ displayName, email, password, reqId }))
     );
-    rabbitmqLib.ConsumeMessage("user", "userExchange", "user.queue", fnConsumer);
+    rabbitmqLib.ConsumeMessage("user", "userExchange", "user.signup", fnConsumer);
     function fnConsumer(msg, callback) {
       const message = msg.content.toString();
-        console.log(JSON.parse(message));
+      console.log(message)
       callback(true);
     }
   } catch (error) {

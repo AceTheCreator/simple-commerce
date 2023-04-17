@@ -23,8 +23,8 @@ app.use(logger);
 // Channels
 console.log(cyan.bold.inverse(' SUB '), gray('Subscribed to'), yellow('user/signup'));
 app.use(userSignup);
-console.log(yellow.bold.inverse(' PUB '), gray('Will eventually publish to'), yellow('user/login'));
-app.useOutbound(userLogin);
+console.log(cyan.bold.inverse(' SUB '), gray('Subscribed to'), yellow('user/login'));
+app.use(userLogin);
 console.log(yellow.bold.inverse(' PUB '), gray('Will eventually publish to'), yellow('user/queue'));
 app.useOutbound(userQueue);
 

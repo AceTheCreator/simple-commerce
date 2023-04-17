@@ -6,10 +6,10 @@ module.exports = router;
 
 
 
-router.useOutbound('user/login', async (message, next) => {
+router.use('user/login', async (message, next) => {
   try {
     
-    await validateMessage(message.payload,'user/login','userLogIn','subscribe');
+    await validateMessage(message.payload,'user/login','userLogIn','publish');
     await userLoginHandler.login({message});
     next();
     

@@ -23,22 +23,28 @@ channels:
         $ref: '#/components/messages/userSignUp'
       bindings:
         amqp:
-          cc: ['user.signup']
+          cc: ['signupKey']
           timestamp: true
           ack: false
           bindingVersion: 0.2.0
     bindings:
       $ref: '#/components/channelBindings/userExchange'
   user/login:
-    subscribe:
+    publish:
       operationId: login
       message:
         $ref: '#/components/messages/userLogIn'
+      bindings:
+        amqp:
+          cc: ['loginKey']
+          timestamp: true
+          ack: false
+          bindingVersion: 0.2.0
     bindings:
       $ref: '#/components/channelBindings/userExchange'
   user/queue:
     bindings:
-      $ref: '#/components/channelBindings/userExchange'
+      $ref: '#/components/channelBindings/tempExchange'
     subscribe: 
       operationId: userQueue
       message: 
@@ -59,7 +65,7 @@ channels:
                   type: string
       bindings:
         amqp:
-          cc: ['user.queue']
+          cc: ['temp.user']
           timestamp: true
           ack: false
           bindingVersion: 0.2.0
@@ -91,10 +97,6 @@ components:
             type: string
             format: email
             description: Email of the user
-          password: 
-            type: string
-            format: string
-            description: Password of the user
   channelBindings:
     userExchange:
       amqp:
@@ -107,6 +109,22 @@ components:
           vhost: /
         exchange:
           name: userExchange
+          type: direct
+          durable: true
+          autoDelete: false
+          vhost: /
+        bindingVersion: 0.2.0
+    tempExchange:
+      amqp:
+        is: routingKey
+        queue:
+          name: tempQueue
+          durable: true
+          exclusive: true
+          autoDelete: false
+          vhost: /
+        exchange:
+          name: tempExchange
           type: topic
           durable: true
           autoDelete: false
