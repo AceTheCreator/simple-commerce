@@ -8,7 +8,6 @@ module.exports = router;
 
 router.useOutbound('user/queue', async (message, next) => {
   try {
-    
     await validateMessage(message.payload,'user/queue','userQueue','subscribe');
     await userQueueHandler.userQueue({message});
     next();
