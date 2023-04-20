@@ -10,10 +10,11 @@ default:
       password: rabbitmq
       host: localhost:15672
       port:
-      topics: ["user.signup","user.login.#"]
+      topics: ["user.signup","user.login.#", "user.queue"]
       queue: user
       queueOptions:
         exclusive: false
+        persistent: false
         durable: true
         autoDelete: false
 

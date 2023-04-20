@@ -34,7 +34,6 @@ channels:
         messageId: userQueue
         payload: 
           type: object
-          additionalProperties: false
           properties:
             reqId:
               $ref: '#/components/schemas/uuid'
@@ -54,6 +53,11 @@ components:
       name: userSignUp
       payload:
         type: object
+        additionalProperties: false
+        required:
+          - displayName
+          - email
+          - password
         properties:
           displayName:
             type: string
@@ -65,48 +69,28 @@ components:
           password: 
             type: string
             description: Password of the user
+            reqId:
+              $ref: '#/components/schemas/uuid'
+
     userLogIn:
       name: userLogIn
       payload:
+        additionalProperties: false      
+        required:
+          - email
+          - password
         type: object
         properties:
           email:
             type: string
             format: email
             description: Email of the user
-  # channelBindings:
-  #   userExchange:
-  #     amqp:
-  #       is: routingKey
-  #       queue:
-  #         name: user
-  #         durable: true
-  #         exclusive: true
-  #         autoDelete: false
-  #         vhost: /
-  #       exchange:
-  #         name: userExchange
-  #         type: direct
-  #         durable: true
-  #         autoDelete: false
-  #         vhost: /
-  #       bindingVersion: 0.2.0
-  #   tempExchange:
-  #     amqp:
-  #       is: routingKey
-  #       queue:
-  #         name: tempQueue
-  #         durable: true
-  #         exclusive: true
-  #         autoDelete: false
-  #         vhost: /
-  #       exchange:
-  #         name: tempExchange
-  #         type: topic
-  #         durable: true
-  #         autoDelete: false
-  #         vhost: /
-  #       bindingVersion: 0.2.0
+          password:
+            type: string
+            description: Password of the user
+            reqId:
+              $ref: '#/components/schemas/uuid'
+              
   schemas:
      uuid:
        type: string
