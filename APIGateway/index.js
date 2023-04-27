@@ -2,6 +2,7 @@ const fastify = require("fastify")();
 const rabbitmqLib = require("./configs/rabbitmq-connection");
 const FastifySSE = require("fastify-sse");
 const authRoutes = require("./routes/auth")
+const {fnConsumer} = require("./controllers/auth")
 
 fastify.register(authRoutes);
 
@@ -29,7 +30,7 @@ fastify.register(FastifySSE);
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
   rabbitmqLib.StartPublisher();
-  rabbitmqLib.StartConsumer();
+  rabbitmqLib.StartConsumer("user", fnConsumer);
 });
 
 fastify.get("/", (req, res) => {

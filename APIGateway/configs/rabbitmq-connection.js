@@ -33,7 +33,7 @@ module.exports = {
       fnFinish();
     });
   },
-  StartConsumer: () => {
+  StartConsumer: (queue, fnConsumer) => {
     // Create a channel for queue
     amqpConn.createChannel(async function (err, ch) {
       if (closeOnErr(err)) return;
@@ -46,46 +46,29 @@ module.exports = {
         console.log("[AMQP] channel closed");
       });
 
-      conChannel = ch;
+      ch.prefetch(10);
+
+      ch.assertQueue(queue, { durable: true }, function (err, _ok) {
+        if (closeOnErr(err)) return;
+        // Consume incoming messages
+        ch.consume(queue, processMsg, { noAck: false });
+        console.log("[AMQP] Worker is started");
+      });
+
+      function processMsg(msg) {
+        // Process incoming messages and send them to fnConsumer
+        // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
+        fnConsumer(msg, function (ok) {
+          try {
+            ok ? ch.ack(msg) : ch.reject(msg, true);
+          } catch (e) {
+            closeOnErr(e);
+          }
+        });
+      }
+
       console.log("[AMQP] Consumer started");
     });
-  },
-  ConsumeMessage: async (queue, exchange, topic, fnConsumer) => {
-    if (!conChannel) {
-      console.log(
-        "[AMQP] Can't consume message. Consumer is not initialized. You need to initialize them with StartPublisher function"
-      );
-      return;
-    }
-
-    // connect to an exchange
-    await conChannel.assertExchange(exchange, "topic", { durable: true });
-
-    // Connect to queue
-    await conChannel.assertQueue(
-      queue,
-      { durable: true, autoDelete: false },
-      (err) => {
-        if (closeOnErr(err)) return;
-        console.log("[AMQP] Worker is started");
-      }
-    );
-
-    await conChannel.bindQueue(queue, exchange, topic);
-
-    function processMsg(msg) {
-      // Process incoming messages and send them to fnConsumer
-      // Here we need to send a callback(true) for acknowledge the message or callback(false) for reject them
-      fnConsumer(msg, function (ok) {
-        try {
-          ok ? conChannel.ack(msg) : conChannel.reject(msg, true);
-        } catch (e) {
-          closeOnErr(e);
-        }
-      });
-    }
-
-    conChannel.consume(queue, processMsg, { ack: false });
   },
   StartPublisher: () => {
     // Init publisher
