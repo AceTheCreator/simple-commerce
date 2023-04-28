@@ -60,11 +60,3 @@ app
   .catch(console.error);
   exports.app = app;
 
-
-// const send = () => {
-//   console.log('hello')
-// }
-
-// module.exports = "send"
-// console.log(module)
-

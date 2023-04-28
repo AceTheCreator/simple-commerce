@@ -34,8 +34,13 @@ channels:
         messageId: userQueue
         payload: 
           type: object
+          required: 
+            - reqId
+            - status
           properties:
             reqId:
+              $ref: '#/components/schemas/uuid'
+            token: 
               $ref: '#/components/schemas/uuid'
             status: 
               type: object
@@ -59,6 +64,8 @@ components:
           - email
           - password
         properties:
+          reqId:
+            $ref: '#/components/schemas/uuid'
           displayName:
             type: string
             description: Name of the user
@@ -81,6 +88,8 @@ components:
           - password
         type: object
         properties:
+          reqId:
+            $ref: '#/components/schemas/uuid'
           email:
             type: string
             format: email

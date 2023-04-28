@@ -1,4 +1,6 @@
 const amqp = require("amqplib/callback_api");
+const { listener } = require("../utils/events");
+
 
 let amqpConn = null;
 module.exports = {
@@ -88,7 +90,7 @@ module.exports = {
       console.log("[AMQP] Publisher started");
     });
   },
-  PublishMessage: (exchange, routingKey, content, options = {}) => {
+  PublishMessage: async (exchange, routingKey, content, options = {}) => {
     // Verify if pubchannel is started
     if (!pubChannel) {
       console.error(
@@ -109,6 +111,9 @@ module.exports = {
         }
         console.log("[AMQP] message delivered");
       });
+      const parsedMessage = JSON.parse(message);
+      const response = await listener(parsedMessage.reqId);
+      return response
     } catch (e) {
       console.error("[AMQP] publish", e.message);
     }

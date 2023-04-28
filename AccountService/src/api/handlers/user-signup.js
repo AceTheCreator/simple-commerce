@@ -12,11 +12,17 @@ const hermes = require("../index");
 handler.signup = async ({ message, next }) => {
   const payload = {
     reqId: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+    token: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
     status: {
       code: 200,
       message: "successful",
     },
   };
-  console.log()
-  hermes.app.send(payload, {}, "user/queue");
+  hermes.app.send(
+    payload,
+    {
+      correlationId: "162636",
+    },
+    "user/queue"
+  );
 };

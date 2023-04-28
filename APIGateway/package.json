@@ -17,6 +17,7 @@
     "fastify-sse": "^1.0.0",
     "fastify-sse-v2": "^3.1.0",
     "nodemon": "^2.0.21",
-    "sse-express": "^1.0.2"
+    "sse-express": "^1.0.2",
+    "uuid": "^9.0.0"
   }
 }
