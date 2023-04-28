@@ -19,10 +19,8 @@ async function signup(req, reply) {
     );
     console.log(response)
   } catch (error) {
-    console.log(error)
     return reply.send({ status: 500, message: error });
   }
-  // reply.send({ status: 200, message: "Signup successful" });
 }
 
 module.exports = {
