@@ -1,5 +1,9 @@
 const handler = (module.exports = {});
 const hermes = require("../index");
+const User = require("../schemas/User");
+const bcrypt = require("bcryptjs");
+
+const reqPayload = {};
 
 /**
  *
@@ -10,19 +14,28 @@ const hermes = require("../index");
  * @param {string} options.message.payload.password - Password of the user
  */
 handler.signup = async ({ message, next }) => {
-  const payload = {
-    reqId: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-    token: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-    status: {
+  const msgPayload = message.payload;
+  reqPayload.reqId = msgPayload.reqId;
+  const getUser = await User.findOne({ email: msgPayload.email });
+
+  if (getUser) {
+    reqPayload.status = {
+      code: 400,
+      message: "User already exists",
+    };
+  } else {
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(msgPayload.password, salt);
+    const newUser = new User({
+      email: msgPayload.email,
+      displayName: msgPayload.displayName,
+      password: hash,
+    });
+    await newUser.save();
+    reqPayload.status = {
       code: 200,
-      message: "successful",
-    },
-  };
-  hermes.app.send(
-    payload,
-    {
-      correlationId: "162636",
-    },
-    "user/queue"
-  );
+      message: "Successfully created a new user",
+    };
+  }
+  hermes.app.send(reqPayload, {}, "user/queue");
 };
