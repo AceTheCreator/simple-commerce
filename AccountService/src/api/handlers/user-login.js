@@ -39,6 +39,6 @@ handler.login = async ({ message }) => {
       message: "Email/Password is incorrect",
     };
   }
-  hermes.app.send(reqPayload, {}, "user/queue");
+  hermes.app.send(reqPayload, {}, "log/users");
   // Implement your business logic here...
 };

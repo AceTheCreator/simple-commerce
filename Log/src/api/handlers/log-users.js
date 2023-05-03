@@ -12,5 +12,6 @@ const handler = module.exports = {};
  * @param {string} options.message.payload.status.message
  */
 handler.userlog = async ({message}) => {
+
   // Implement your business logic here...
 };

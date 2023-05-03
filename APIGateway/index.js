@@ -30,7 +30,7 @@ fastify.register(FastifySSE);
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
   rabbitmqLib.StartPublisher();
-  rabbitmqLib.StartConsumer("user", fnConsumer);
+  rabbitmqLib.StartConsumer("log", fnConsumer);
 });
 
 fastify.get("/", (req, res) => {

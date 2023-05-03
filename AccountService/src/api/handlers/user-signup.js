@@ -45,5 +45,5 @@ handler.signup = async ({ message, next }) => {
       "notify/welcome"
     );
   }
-  hermes.app.send(reqPayload, {}, "user/queue");
+  hermes.app.send(reqPayload, {}, "log/users");
 };
