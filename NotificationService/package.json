@@ -6,14 +6,14 @@
     "start": "node src/api/index.js"
   },
   "dependencies": {
+    "asyncapi-validator": "3.0.0",
     "chalk": "4.1.2",
     "dotenv": "8.1.0",
     "hermesjs": "2.x",
-    "hermesjs-router": "1.x",
-    "asyncapi-validator": "3.0.0",
     "hermesjs-amqp": "1.x",
-    
+    "hermesjs-router": "1.x",
     "node-fetch": "2.6.0",
-    "node-yaml-config": "0.0.4"
+    "node-yaml-config": "0.0.4",
+    "postmark": "^3.0.18"
   }
 }

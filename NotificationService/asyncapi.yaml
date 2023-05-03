@@ -32,6 +32,10 @@ components:
       name: welcomeMessage
       payload:
         type: object
+        additionalProperties: false
+        required:
+          - email
+          - displayName
         properties:
           email: 
             type: string

@@ -5,17 +5,18 @@ default:
 
   broker:
     amqp:
-      exchange:
-      username:
-      password:
+      exchange: headlessExchange
+      username: rabbitmq
+      password: rabbitmq
       host: localhost:15672
       port:
       topics: ["notify.welcome"]
-      queue: notification.service.1.0.0
+      queue: notification
       queueOptions:
         exclusive: false
+        persistent: false
         durable: true
-        autoDelete: true
+        autoDelete: false
 
 development:
 

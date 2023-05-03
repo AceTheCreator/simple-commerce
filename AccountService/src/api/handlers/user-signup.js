@@ -36,6 +36,14 @@ handler.signup = async ({ message, next }) => {
       code: 200,
       message: "Successfully created a new user",
     };
+    hermes.app.send(
+      {
+        email: newUser.email,
+        displayName: newUser.displayName,
+      },
+      {},
+      "notify/welcome"
+    );
   }
   hermes.app.send(reqPayload, {}, "user/queue");
 };

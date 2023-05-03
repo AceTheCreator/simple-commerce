@@ -15,7 +15,7 @@ async function signup(req, reply) {
   try {
     // publish an event
     const response = await rabbitmqLib.PublishMessage(
-      "userExchange",
+      "headlessExchange",
       "user.signup",
       Buffer.from(JSON.stringify({ displayName, email, password, reqId }))
     );
@@ -38,7 +38,7 @@ async function login(req, reply){
 
   try {
     const response = await rabbitmqLib.PublishMessage(
-      "userExchange",
+      "headlessExchange",
       "user.login",
       Buffer.from(JSON.stringify({ email, password, reqId }))
     );
