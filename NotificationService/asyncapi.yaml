@@ -1,0 +1,41 @@
+asyncapi: '2.6.0'
+info:
+  title: Notification Service
+  version: '1.0.0'
+  description: Service to handle all our notifications
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+  development:
+    url: amqp://localhost:{port}
+    protocol: amqp
+    protocolVersion: "0.9.1"
+    description: This our development broker.
+    variables:
+      port:
+        enum:
+          - '15672'
+          - '5672'
+defaultContentType: application/json
+channels:
+  notify/welcome:
+    publish:
+      operationId: welcome
+      message:
+        $ref: '#/components/messages/welcome'
+
+components:
+  messages:
+    welcome:
+      messageId: welcomeMessage
+      name: welcomeMessage
+      payload:
+        type: object
+        properties:
+          email: 
+            type: string
+            format: email
+          displayName: 
+            type: string
+
