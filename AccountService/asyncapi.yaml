@@ -14,7 +14,9 @@ servers:
         enum:
           - '15672'
           - '5672'
+          
 defaultContentType: application/json
+
 channels:
   user/signup:
     publish:
@@ -26,30 +28,6 @@ channels:
       operationId: login
       message:
         $ref: '#/components/messages/userLogIn'
-  user/queue:
-    subscribe: 
-      operationId: userQueue
-      message: 
-        name: userQueue
-        messageId: userQueue
-        payload: 
-          type: object
-          required: 
-            - reqId
-            - status
-          properties:
-            reqId:
-              $ref: '#/components/schemas/uuid'
-            token: 
-              $ref: '#/components/schemas/uuid'
-            status: 
-              type: object
-              description: Status code and message for the queue
-              properties:
-                code:
-                  type: integer
-                message: 
-                  type: string
 
 components:
   messages:

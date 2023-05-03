@@ -1,0 +1,26 @@
+default:
+  app:
+    name: Log Service
+    version: 1.0.0
+
+  broker:
+    amqp:
+      exchange:
+      username:
+      password:
+      host: localhost:15672
+      port:
+      topics: ["log.users"]
+      queue: log.service.1.0.0
+      queueOptions:
+        exclusive: false
+        durable: true
+        autoDelete: true
+
+development:
+
+test:
+
+staging:
+
+production:

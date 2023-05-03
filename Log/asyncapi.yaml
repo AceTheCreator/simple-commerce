@@ -1,0 +1,50 @@
+asyncapi: '2.6.0'
+info:
+  title: Log Service
+  version: 1.0.0
+  description: This service is in charge of monitoring logs
+servers: 
+  development:
+    url: amqp://localhost:{port}
+    protocol: amqp
+    protocolVersion: "0.9.1"
+    description: This our development broker.
+    variables:
+      port:
+        enum:
+          - '15672'
+          - '5672'
+channels:
+  log/users:
+    publish:
+      operationId: userlog
+      message: 
+        $ref: '#/components/messages/users'
+
+components:
+  messages:
+    users:
+      name: userLogs
+      messageId: userLogs
+      payload:
+        required: 
+          - reqId
+          - status
+        properties:
+          reqId:
+            $ref: '#/components/schemas/uuid'
+          token: 
+            $ref: '#/components/schemas/uuid'
+          status: 
+            type: object
+            description: Status code and message for the queue
+            properties:
+              code:
+                type: integer
+              message: 
+                type: string
+  schemas:
+     uuid:
+       type: string
+       format: uuid
+       description: A UUID (Universally Unique Identifier) is a 128-bit number used to identify information in computer systems.
