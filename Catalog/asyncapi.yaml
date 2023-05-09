@@ -1,0 +1,147 @@
+asyncapi: '2.6.0'
+info:
+  title: Catalog Service
+  version: '1.0.0'
+  description: responsible for handling product services
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  development:
+    url: amqp://localhost:{port}
+    protocol: amqp
+    protocolVersion: "0.9.1"
+    description: This our development broker.
+    variables:
+      port:
+        enum:
+          - '15672'
+          - '5672'
+
+defaultContentType: application/json
+
+channels:
+  catalog/product:
+    publish:
+      operationId: single
+      message:
+        name: getProduct
+        messageId: getProduct
+        payload: 
+          type: object
+          additionalProperties: false
+          properties:
+            id: 
+              $ref: '#/components/schemas/uuid'
+    subscribe:
+      operationId: retrieve
+      message:
+        name: retrieve
+        messageId: retrieve
+        $ref: '#/components/messages/product'
+  catalog/products:
+    publish:
+      operationId: all
+      message:
+        name: all
+        messageId: all
+        payload:
+          additionalProperties: false
+          type: object
+          properties:
+            username: 
+              type: string
+              description: user/shop name
+    subscribe:
+      operationId: retrieveAll
+      message:
+        $ref: '#/components/messages/products'          
+  catalog/add:
+    publish:
+      operationId: append
+      message:
+        name: append
+        messageId: append
+        $ref: '#/components/messages/product'
+  catalog/update:
+    publish: 
+      operationId: update
+      message:
+        $ref: '#/components/messages/updateProduct'
+components:
+  messages:
+    product:
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            description: Correlation ID set by application
+          token: 
+            $ref: '#/components/schemas/uuid'
+            description: used for temp user validation
+      payload:
+        required:
+          - name
+          -  image
+          -  type
+          -  price
+        $ref: '#/components/schemas/product'
+    products:
+      name: products
+      messageId: products
+      payload:
+        type: array
+        items:
+          type: object
+          $ref: '#/components/schemas/product'
+    updateProduct:
+      name: update
+      messageId: update
+      headers:
+        type: object
+        properties:
+          correlationId:
+            type: string
+            description: Correlation ID set by application
+          token: 
+            $ref: '#/components/schemas/uuid'
+            description: used for temp user validation
+      payload:
+        type: object
+        properties:
+          id: 
+            $ref: '#/components/schemas/uuid'
+            description: product unique identifier
+            name: 
+              type: string
+              description: product name
+            price:
+              type: integer
+              description: product price
+  schemas:
+    uuid:
+       type: string
+       format: uuid
+       description: A UUID (Universally Unique Identifier) is a 128-bit number used to identify information in computer systems.
+    product:
+      type: object
+      properties:
+        name:
+            type: string
+            description: product name
+        image: 
+            type: string
+            description: product image
+        type:
+            type: string
+            description: type of product
+        price:
+            type: integer
+            description: product type
+        description:
+            type: string
+            description: about the product
+
+

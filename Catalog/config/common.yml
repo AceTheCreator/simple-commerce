@@ -1,0 +1,27 @@
+default:
+  app:
+    name: Catalog Service
+    version: 1.0.0
+
+  broker:
+    amqp:
+      exchange: headlessExchange
+      username: rabbitmq
+      password: rabbitmq
+      host: localhost:15672
+      port:
+      topics: ["catalog.product","catalog.products.#","catalog.add.#","catalog.update.#"]
+      queue: catalog
+      queueOptions:
+        exclusive: false
+        persistent: false
+        durable: true
+        autoDelete: false
+
+development:
+
+test:
+
+staging:
+
+production:

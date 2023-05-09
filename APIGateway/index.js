@@ -2,9 +2,11 @@ const fastify = require("fastify")();
 const rabbitmqLib = require("./configs/rabbitmq-connection");
 const FastifySSE = require("fastify-sse");
 const authRoutes = require("./routes/auth")
+const catalogRoutes = require("./routes/catalog");
 const {fnConsumer} = require("./controllers/auth")
 
 fastify.register(authRoutes);
+fastify.register(catalogRoutes);
 
 fastify.register(require("@fastify/cors"), (instance) => {
   return (req, callback) => {
