@@ -11,7 +11,7 @@ async function add(req, reply) {
         Buffer.from(JSON.stringify({name, image, price, type, description})),
         {
             correlationId: '334',
-            token: 'ddkf'
+            userId: 'rabbitmq'
         }
     )
   } catch (error) {

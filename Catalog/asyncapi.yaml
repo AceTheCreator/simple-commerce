@@ -105,9 +105,9 @@ components:
           correlationId:
             type: string
             description: Correlation ID set by application
-          token: 
+          userId: 
             $ref: '#/components/schemas/uuid'
-            description: used for temp user validation
+            description: unique id for user
       payload:
         type: object
         properties:
