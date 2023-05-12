@@ -9,8 +9,8 @@ module.exports = router;
 router.use('catalog/products', async (message, next) => {
   try {
     
-    await validateMessage(message.payload,'catalog/products','all','publish');
-    await catalogProductsHandler.all({message});
+    await validateMessage(message.payload,'catalog/products','getProducts','publish');
+    await catalogProductsHandler.requestCatalogs({message});
     next();
     
   } catch (e) {
@@ -20,8 +20,8 @@ router.use('catalog/products', async (message, next) => {
 router.useOutbound('catalog/products', async (message, next) => {
   try {
     
-    await validateMessage(message.payload,'catalog/products','products','subscribe');
-    await catalogProductsHandler.retrieveAll({message});
+    await validateMessage(message.payload,'catalog/products','recieveProducts','subscribe');
+    await catalogProductsHandler.retrieveProducts({message});
     next();
     
   } catch (e) {

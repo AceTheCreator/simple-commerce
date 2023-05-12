@@ -9,8 +9,8 @@ module.exports = router;
 router.use('catalog/add', async (message, next) => {
   try {
     
-    await validateMessage(message.payload,'catalog/add','append','publish');
-    await catalogAddHandler.append({message});
+    await validateMessage(message.payload,'catalog/add','addProduct','publish');
+    await catalogAddHandler.addCatalog({message});
     next();
     
   } catch (e) {

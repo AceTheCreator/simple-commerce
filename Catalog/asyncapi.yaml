@@ -24,7 +24,7 @@ defaultContentType: application/json
 channels:
   catalog/product:
     publish:
-      operationId: single
+      operationId: requestCatalog
       message:
         name: getProduct
         messageId: getProduct
@@ -35,17 +35,17 @@ channels:
             id: 
               $ref: '#/components/schemas/uuid'
     subscribe:
-      operationId: retrieve
+      operationId: recieveCatalog
       message:
-        name: retrieve
-        messageId: retrieve
+        name: retrieveProduct
+        messageId: retrieveProduct
         $ref: '#/components/messages/product'
   catalog/products:
     publish:
-      operationId: all
+      operationId: requestCatalogs
       message:
-        name: all
-        messageId: all
+        name: getProducts
+        messageId: getProducts
         payload:
           additionalProperties: false
           type: object
@@ -54,19 +54,23 @@ channels:
               type: string
               description: user/shop name
     subscribe:
-      operationId: retrieveAll
+      operationId: retrieveProducts
       message:
+        name: recieveProducts
+        messageId: recieveProducts
         $ref: '#/components/messages/products'          
   catalog/add:
     publish:
-      operationId: append
+      operationId: addCatalog
+      security:
+        - bearerAuth: []
       message:
-        name: append
-        messageId: append
+        name: addProduct
+        messageId: addProduct
         $ref: '#/components/messages/product'
   catalog/update:
     publish: 
-      operationId: update
+      operationId: updateCatalog
       message:
         $ref: '#/components/messages/updateProduct'
 components:
@@ -78,9 +82,6 @@ components:
           correlationId:
             type: string
             description: Correlation ID set by application
-          token: 
-            $ref: '#/components/schemas/uuid'
-            description: used for temp user validation
       payload:
         required:
           - name
@@ -89,25 +90,22 @@ components:
           -  price
         $ref: '#/components/schemas/product'
     products:
-      name: products
-      messageId: products
       payload:
         type: array
         items:
           type: object
           $ref: '#/components/schemas/product'
     updateProduct:
-      name: update
-      messageId: update
+      name: updateProduct
+      messageId: updateProduct
       headers:
         type: object
         properties:
           correlationId:
             type: string
             description: Correlation ID set by application
-          userId: 
-            $ref: '#/components/schemas/uuid'
-            description: unique id for user
+          headers:
+            type: object
       payload:
         type: object
         properties:
@@ -143,5 +141,11 @@ components:
         description:
             type: string
             description: about the product
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 

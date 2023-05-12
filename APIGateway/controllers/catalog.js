@@ -11,13 +11,14 @@ async function add(req, reply) {
         Buffer.from(JSON.stringify({name, image, price, type, description})),
         {
             correlationId: '334',
-            userId: 'rabbitmq'
         }
     )
   } catch (error) {
     return reply.send({ status: 500, message: error });
   }
 }
+
+
 
 module.exports = {
     add

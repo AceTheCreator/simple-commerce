@@ -7,7 +7,7 @@ const handler = module.exports = {};
  * @param {object} options.message
  * @param {string} options.message.payload.username - user/shop name
  */
-handler.all = async ({message}) => {
+handler.requestCatalogs = async ({message}) => {
   // Implement your business logic here...
 };
 /**
@@ -15,6 +15,6 @@ handler.all = async ({message}) => {
  * @param {object} options
  * @param {object} options.message
  */
-handler.retrieveAll = async ({message}) => {
+handler.retrieveProducts = async ({message}) => {
   // Implement your business logic here...
 };

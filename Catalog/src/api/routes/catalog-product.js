@@ -10,7 +10,7 @@ router.use('catalog/product', async (message, next) => {
   try {
     
     await validateMessage(message.payload,'catalog/product','getProduct','publish');
-    await catalogProductHandler.single({message});
+    await catalogProductHandler.requestCatalog({message});
     next();
     
   } catch (e) {
@@ -20,8 +20,8 @@ router.use('catalog/product', async (message, next) => {
 router.useOutbound('catalog/product', async (message, next) => {
   try {
     
-    await validateMessage(message.payload,'catalog/product','retrieve','subscribe');
-    await catalogProductHandler.retrieve({message});
+    await validateMessage(message.payload,'catalog/product','retrieveProduct','subscribe');
+    await catalogProductHandler.recieveCatalog({message});
     next();
     
   } catch (e) {

@@ -19,14 +19,21 @@ channels:
     publish:
       operationId: userlog
       message: 
-        $ref: '#/components/messages/users'
-
+        name: userLogs
+        messageId: userLogs
+        $ref: '#/components/messages/logs'
+  log/catalog:
+    publish:
+      operationId: productLog
+      message:
+        name: productLogs
+        messageId: productLogs
+        $ref: '#/components/messages/logs'
 components:
   messages:
-    users:
-      name: userLogs
-      messageId: userLogs
+    logs:
       payload:
+        type: object
         required: 
           - reqId
           - status
