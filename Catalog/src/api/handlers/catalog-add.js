@@ -14,6 +14,6 @@ const hermes = require("../index");
  * @param {string} options.message.payload.description - about the product
  */
 handler.addCatalog = async ({message}) => {
-
+console.log(message)
   // Implement your business logic here...
 };

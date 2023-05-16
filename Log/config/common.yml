@@ -11,10 +11,10 @@ default:
       host: localhost:15672
       port:
       topics: ["log.users","log.catalog.#"]
-      queue: log.service.1.0.0
+      queue: log
       queueOptions:
         exclusive: false
-        persistent: false
+        persistent: true
         durable: true
         autoDelete: false
 

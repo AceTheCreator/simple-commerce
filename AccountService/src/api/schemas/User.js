@@ -12,6 +12,10 @@ const user = new Schema({
     password: {
         type: String,
         require
+    },
+    token: {
+        type: String,
+        require
     }
 })
 

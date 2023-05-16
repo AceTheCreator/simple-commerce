@@ -2,6 +2,7 @@ const handler = (module.exports = {});
 const hermes = require("../index");
 const User = require("../schemas/User");
 const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
 
 const reqPayload = {};
 
@@ -14,8 +15,10 @@ const reqPayload = {};
  * @param {string} options.message.payload.password - Password of the user
  */
 handler.signup = async ({ message, next }) => {
+  console.log(message)
   const msgPayload = message.payload;
   reqPayload.reqId = msgPayload.reqId;
+  const reqId = uuidv4();
   const getUser = await User.findOne({ email: msgPayload.email });
 
   if (getUser) {
@@ -30,8 +33,10 @@ handler.signup = async ({ message, next }) => {
       email: msgPayload.email,
       displayName: msgPayload.displayName,
       password: hash,
+      token: reqId,
     });
     await newUser.save();
+    reqPayload.token = newUser.token;
     reqPayload.status = {
       code: 200,
       message: "Successfully created a new user",
@@ -45,5 +50,12 @@ handler.signup = async ({ message, next }) => {
       "notify/welcome"
     );
   }
-  hermes.app.send(reqPayload, {}, "log/users");
+  message.reply(
+    reqPayload,
+    {
+      correlationId: message.headers.correlationId,
+      headers: { myKey: "myValue" },
+    },
+    "log/users"
+  );
 };

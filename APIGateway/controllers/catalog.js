@@ -6,13 +6,14 @@ async function add(req, reply) {
   const { name, image, type, price, description } = req.body;
   try {
     rabbitmqLib.PublishMessage(
-        "headlessExchange",
-        "catalog.add",
-        Buffer.from(JSON.stringify({name, image, price, type, description})),
-        {
-            correlationId: '334',
-        }
-    )
+      "headlessExchange",
+      "catalog.add",
+      Buffer.from(JSON.stringify({ name, image, price, type, description })),
+      {
+        correlationId: "334",
+        headers: { myKey: "myValue" },
+      }
+    );
   } catch (error) {
     return reply.send({ status: 500, message: error });
   }

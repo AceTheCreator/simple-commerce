@@ -14,9 +14,9 @@ default:
       queue: catalog
       queueOptions:
         exclusive: false
-        persistent: false
+        persistent: true
         durable: true
-        autoDelete: false
+        autoDelete: true
 
 development:
 

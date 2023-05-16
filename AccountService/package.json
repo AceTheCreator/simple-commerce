@@ -16,6 +16,7 @@
     "mongoose": "^7.1.0",
     "node-fetch": "2.6.0",
     "node-yaml-config": "0.0.4",
-    "postmark": "^3.0.18"
+    "postmark": "^3.0.18",
+    "uuid": "^9.0.0"
   }
 }
