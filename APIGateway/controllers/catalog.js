@@ -22,28 +22,44 @@ async function add(req, reply) {
   }
 }
 
-async function retrieveAll(req, reply) {
+async function getProducts(req, reply) {
   const username = req.user.email;
   const reqId = uuidv4();
   try {
     const response = await rabbitmqLib.PublishMessage(
       "headlessExchange",
       "catalog.products",
-      Buffer.from(
-        JSON.stringify({ username })
-      ),
+      Buffer.from(JSON.stringify({ username })),
       {
         correlationId: reqId,
       }
     );
-  return reply.status(response.status.code).send(response);
+    return reply.status(response.status.code).send(response);
   } catch (error) {
-    console.log(error)
+    return reply.send({ status: 500, message: error });
+  }
+}
+
+async function getProduct(req, reply) {
+  const reqId = uuidv4();
+  const productId = req.params.id;
+  try {
+    const response = await rabbitmqLib.PublishMessage(
+      "headlessExchange",
+      "catalog.product",
+      Buffer.from(JSON.stringify({ id: productId })),
+      {
+        correlationId: reqId,
+      }
+    );
+    return reply.status(response.status.code).send(response);
+  } catch (error) {
     return reply.send({ status: 500, message: error });
   }
 }
 
 module.exports = {
   add,
-  retrieveAll,
+  getProducts,
+  getProduct,
 };

@@ -33,7 +33,8 @@ channels:
           additionalProperties: false
           properties:
             id: 
-              $ref: '#/components/schemas/uuid'
+              type: string
+              description: unique product identifier
     subscribe:
       operationId: recieveCatalog
       message:

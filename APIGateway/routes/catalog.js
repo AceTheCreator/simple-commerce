@@ -13,7 +13,12 @@ module.exports = function (fastify, _, next) {
     {
       preValidation: [fastify.jwtauthentication],
     },
-    CatalogController.retrieveAll
+    CatalogController.getProducts
+  );
+  fastify.get("/product/:id", {
+    preValidation: [fastify.jwtauthentication],
+  },
+  CatalogController.getProduct
   );
   next();
 };
