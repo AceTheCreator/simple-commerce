@@ -1,6 +1,7 @@
 
 const handler = module.exports = {};
 const hermes = require("../index");
+const Catalog = require("../schemas/Product");
 
 /**
  * 

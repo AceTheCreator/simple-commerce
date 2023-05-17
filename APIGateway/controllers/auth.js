@@ -1,11 +1,11 @@
+const fastify = require("../index");
 const rabbitmqLib = require("../configs/rabbitmq-connection");
 const { emitter } = require("../utils/events");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 function fnConsumer(msg, callback) {
   const message = msg.content.toString();
   const parsedMessage = JSON.parse(message);
-  console.log(parsedMessage)
   callback(true);
   emitter(parsedMessage.reqId, message);
 }
@@ -20,24 +20,21 @@ async function signup(req, reply) {
       "user.signup",
       Buffer.from(JSON.stringify({ displayName, email, password, reqId })),
       {
-        correlationId: reqId
+        correlationId: reqId,
       }
     );
-    if (response.status !== 200 || response.status !== 201) {
-      return reply.status(response.status.code).send(response);
-    } else {
-      return reply.send({
-        status: response.status.code,
-        message: response.status.message,
-      });
+    if (response.status.code === 200) {
+      const token = fastify.fastify.jwt.sign({ email });
+      response.token = token;
     }
+    return reply.status(response.status.code).send(response);
   } catch (error) {
     return reply.send({ status: 500, message: error });
   }
 }
 
-async function login(req, reply){
-  const {email, password} = req.body;
+async function login(req, reply) {
+  const { email, password } = req.body;
   const reqId = uuidv4();
 
   try {
@@ -46,21 +43,19 @@ async function login(req, reply){
       "user.login",
       Buffer.from(JSON.stringify({ email, password, reqId }))
     );
-    if (response.status !== 200 || response.status !== 201) {
-      return reply.status(response.status.code).send(response.status.message);
-    } else {
-      return reply.send({
-        status: response.status.code,
-        message: response.status.message,
-      });
+    if (response.status.code === 200) {
+      const token = fastify.fastify.jwt.sign({ email });
+      response.token = token;
     }
+    return reply.status(response.status.code).send(response);
   } catch (error) {
-        return reply.send({ status: 500, message: error });
+    console.log(error);
+    return reply.send({ status: 500, message: error });
   }
 }
 
 module.exports = {
   signup,
   login,
-  fnConsumer
+  fnConsumer,
 };

@@ -1,10 +1,14 @@
 const fastify = require("fastify")();
 const rabbitmqLib = require("./configs/rabbitmq-connection");
 const FastifySSE = require("fastify-sse");
-const authRoutes = require("./routes/auth")
+const authRoutes = require("./routes/auth");
 const catalogRoutes = require("./routes/catalog");
-const {fnConsumer} = require("./controllers/auth")
+const jwt = require("fastify-jwt");
+const { fnConsumer } = require("./controllers/auth");
 
+fastify.register(jwt, {
+  secret: "littlesecrete", // use .env for this
+});
 fastify.register(authRoutes);
 fastify.register(catalogRoutes);
 
@@ -25,9 +29,15 @@ fastify.register(require("@fastify/cors"), (instance) => {
     callback(null, corsOptions);
   };
 });
-//Initialize fasitfy server send event
 
-fastify.register(FastifySSE);
+  fastify.decorate("jwtauthentication", async (request, reply) => {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  });
+
 
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
@@ -35,10 +45,15 @@ rabbitmqLib.InitConnection(() => {
   rabbitmqLib.StartConsumer("log", fnConsumer);
 });
 
-fastify.get("/", (req, res) => {
-  // res.send("hello world");
-});
-
+fastify.get(
+  "/",
+  {
+    preValidation: [fastify.jwtauthentication],
+  },
+  async function (req, res) {
+    res.status(200).send({ msg: "Success" });
+  }
+);
 
 fastify.get(
   "/events",
@@ -49,10 +64,10 @@ fastify.get(
   },
   (req, reply) => {
     reply.raw.writeHead(200, {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-      });
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    });
     // Send an initial event to the client
     const eventDetails = {
       message: "This is a server-sent event",
@@ -74,3 +89,5 @@ const start = async () => {
   }
 };
 start();
+
+exports.fastify = fastify;

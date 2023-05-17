@@ -23,6 +23,7 @@ handler.login = async ({ message }) => {
       getUser.password
     );
     if (comparePassword) {
+      reqPayload.token = getUser.token;
       reqPayload.status = {
         code: 200,
         message: "Login successful",
