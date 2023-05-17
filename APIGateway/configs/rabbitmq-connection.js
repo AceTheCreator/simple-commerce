@@ -50,7 +50,7 @@ module.exports = {
 
       ch.prefetch(10);
 
-      ch.assertQueue(queue, { durable: true }, function (err, _ok) {
+      ch.assertQueue(queue, { durable: true, autoDelete: true }, function (err, _ok) {
         if (closeOnErr(err)) return;
         // Consume incoming messages
         ch.consume(queue, processMsg, { noAck: false });
@@ -112,7 +112,7 @@ module.exports = {
         console.log("[AMQP] message delivered");
       });
       const parsedMessage = JSON.parse(message);
-      const response = await listener(parsedMessage.reqId);
+      const response = await listener(parsedMessage.reqId || options.correlationId);
       return response
     } catch (e) {
       console.error("[AMQP] publish", e.message);

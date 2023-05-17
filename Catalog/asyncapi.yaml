@@ -126,6 +126,10 @@ components:
     product:
       type: object
       properties:
+        owner:
+          type: string
+          description: product owner
+          format: email
         name:
             type: string
             description: product name

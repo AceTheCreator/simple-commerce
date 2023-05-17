@@ -1,14 +1,6 @@
 const fastify = require("../index");
 const rabbitmqLib = require("../configs/rabbitmq-connection");
-const { emitter } = require("../utils/events");
 const { v4: uuidv4 } = require("uuid");
-
-function fnConsumer(msg, callback) {
-  const message = msg.content.toString();
-  const parsedMessage = JSON.parse(message);
-  callback(true);
-  emitter(parsedMessage.reqId, message);
-}
 
 async function signup(req, reply) {
   const { displayName, email, password } = req.body;
@@ -57,5 +49,4 @@ async function login(req, reply) {
 module.exports = {
   signup,
   login,
-  fnConsumer,
 };

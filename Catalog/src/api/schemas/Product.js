@@ -1,6 +1,10 @@
 const { Schema, default: mongoose } = require("mongoose");
 
 const catalog = new Schema({
+  owner: {
+    type: String,
+    require,
+  },
   name: {
     type: String,
     require,

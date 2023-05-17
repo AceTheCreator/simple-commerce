@@ -4,7 +4,7 @@ const FastifySSE = require("fastify-sse");
 const authRoutes = require("./routes/auth");
 const catalogRoutes = require("./routes/catalog");
 const jwt = require("fastify-jwt");
-const { fnConsumer } = require("./controllers/auth");
+const { emitter } = require("./utils/events");
 
 fastify.register(jwt, {
   secret: "littlesecrete", // use .env for this
@@ -39,10 +39,18 @@ fastify.register(require("@fastify/cors"), (instance) => {
   });
 
 
+  function fnConsumer(msg, callback) {
+    const message = msg.content.toString();
+    const parsedMessage = JSON.parse(message);
+    callback(true);
+    emitter(parsedMessage.reqId, message);
+  }
+
 // InitConnection of rabbitmq
 rabbitmqLib.InitConnection(() => {
   rabbitmqLib.StartPublisher();
   rabbitmqLib.StartConsumer("log", fnConsumer);
+  rabbitmqLib.StartConsumer("catalog", fnConsumer);
 });
 
 fastify.get(

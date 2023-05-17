@@ -16,7 +16,7 @@ default:
         exclusive: false
         persistent: true
         durable: true
-        autoDelete: false
+        autoDelete: true
 
 development:
 

@@ -15,6 +15,7 @@ handler.requestCatalog = async ({message}) => {
  * @param {object} options
  * @param {object} options.message
  * @param {string} options.message.headers.correlationId - Correlation ID set by application
+ * @param {string} options.message.payload.owner - product owner
  * @param {string} options.message.payload.name - product name
  * @param {string} options.message.payload.image - product image
  * @param {string} options.message.payload.type - type of product
