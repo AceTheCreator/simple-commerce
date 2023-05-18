@@ -31,7 +31,6 @@ handler.create = async ({ message }) => {
       }else{
         const getProduct = await Products.findById(productId);
         if(getProduct){
-          console.log(getProduct.owner)
           const newOrder = new Order({
             name: getProduct.name,
             description: getProduct.description,
@@ -40,15 +39,15 @@ handler.create = async ({ message }) => {
             customerName: name,
             vendorEmail: getProduct.owner,
             price: data.amount / 100,
-            currency: data.currency
+            currency: data.currency,
           });
           await newOrder.save();
           reqPayload.status = {
             code: 200,
-            message: 'Order successfully created'
-          }
+            message: "Order successfully created",
+          };
+          // trigger notification for orders
         }
-        // trigger notification for orders
       }
     }
     message.reply(reqPayload, {}, "log/order");
