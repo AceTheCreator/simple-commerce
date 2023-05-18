@@ -1,8 +1,8 @@
 const fastify = require("fastify")();
 const rabbitmqLib = require("./configs/rabbitmq-connection");
-const FastifySSE = require("fastify-sse");
 const authRoutes = require("./routes/auth");
 const catalogRoutes = require("./routes/catalog");
+const orderRoutes = require("./routes/order");
 const jwt = require("fastify-jwt");
 const { emitter } = require("./utils/events");
 
@@ -11,6 +11,7 @@ fastify.register(jwt, {
 });
 fastify.register(authRoutes);
 fastify.register(catalogRoutes);
+fastify.register(orderRoutes);
 
 fastify.register(require("@fastify/cors"), (instance) => {
   return (req, callback) => {
@@ -81,7 +82,6 @@ fastify.get(
       message: "This is a server-sent event",
       timestamp: new Date().toISOString(),
     };
-    console.log(eventDetails);
     reply.sse('data: { "message": "Connected" }\n\n');
   }
 );

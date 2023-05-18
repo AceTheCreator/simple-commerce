@@ -46,19 +46,14 @@ components:
           correlationId:
             type: string
             description: Correlation ID
-        payload:
-          required:
-            - name
-            -  image
-            -  type
-            -  price
-          $ref: '#/components/schemas/order'
+      payload:
+        additonalProperties: false
+        $ref: '#/components/schemas/order'
 
   schemas:
     order:
       type: object
       properties:
-        additonalProperties: false
         productId:
           type: string
           description: unique identify for product

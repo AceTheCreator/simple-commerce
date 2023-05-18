@@ -29,6 +29,13 @@ channels:
         name: productLogs
         messageId: productLogs
         $ref: '#/components/messages/logs'
+  log/order:
+    publish:
+      operationId: orderLog
+      message:
+        name: orderLogs
+        messageId: orderLogs
+        $ref: '#/components/messages/logs'
 components:
   messages:
     logs:

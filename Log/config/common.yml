@@ -10,7 +10,7 @@ default:
       password: rabbitmq
       host: localhost:15672
       port:
-      topics: ["log.users","log.catalog.#"]
+      topics: ["log.users","log.catalog.#","log.order.#"]
       queue: log
       queueOptions:
         exclusive: false

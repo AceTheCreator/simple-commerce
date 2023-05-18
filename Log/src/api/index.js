@@ -12,6 +12,7 @@ const serverConfig = config.broker.amqp;
 const AmqpAdapter = require('hermesjs-amqp');
 const logUsers = require('./routes/log-users.js');
 const logCatalog = require('./routes/log-catalog.js');
+const logOrder = require('./routes/log-order.js');
 
 app.addAdapter(AmqpAdapter, serverConfig);
 
@@ -24,6 +25,8 @@ console.log(cyan.bold.inverse(' SUB '), gray('Subscribed to'), yellow('log/users
 app.use(logUsers);
 console.log(cyan.bold.inverse(' SUB '), gray('Subscribed to'), yellow('log/catalog'));
 app.use(logCatalog);
+console.log(cyan.bold.inverse(' SUB '), gray('Subscribed to'), yellow('log/order'));
+app.use(logOrder);
 
 app.use(errorLogger);
 app.useOutbound(errorLogger);
